@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  webapp1:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_PORT=8080
+    restart: always
+
+  webapp2:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_PORT=8081
+    restart: always
+
+  haproxy:
+    image: haproxy:latest
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "2000:80"
+    depends_on:
+      - webapp1
+      - webapp2
